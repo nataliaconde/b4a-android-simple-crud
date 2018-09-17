@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">ParseObject CRUD</string>
+    <string name="back4app_server_url">https://parseapi.back4app.com/</string>
+    <!-- Change the following strings as required -->
+    <string name="back4app_app_id">back4app_app_id</string>
+    <string name="back4app_client_key">back4app_client_key</string>
+</resources>
