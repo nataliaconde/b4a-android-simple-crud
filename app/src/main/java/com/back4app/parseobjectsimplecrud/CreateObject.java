@@ -37,10 +37,11 @@ public class CreateObject extends AppCompatActivity {
         itemDate = (CalendarView) findViewById(R.id.calendarView);
         create_button = findViewById(R.id.btnCreate);
         isAvailable = (Switch) findViewById(R.id.swiAvailable);
+
         // Get Date from CalendarView
         itemDate.setOnDateChangeListener( new CalendarView.OnDateChangeListener() {
             public void onSelectedDayChange(CalendarView calendarView, int year, int month, int dayOfMonth) {
-                String getDate = (dayOfMonth + "/" + month + "/" + year);
+                String getDate = (dayOfMonth + "/" + (month+1) + "/" + year);
                 formatterDate = convertStringToData(getDate);
             }
         });

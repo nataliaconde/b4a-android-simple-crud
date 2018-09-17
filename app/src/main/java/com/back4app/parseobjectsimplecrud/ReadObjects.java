@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
@@ -57,64 +58,68 @@ public class ReadObjects extends AppCompatActivity {
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> objects, final ParseException e) {
-                if (e == null){
-                    // Adding objects into the Array
-                    for(int i= 0 ; i < objects.size(); i++){
-                        String element = objects.get(i).getString("itemName");
-                        dataList.add(element.toString());
-                    }
-                } else {
-
+            if (e == null){
+                // Adding objects into the Array
+                for(int i= 0 ; i < objects.size(); i++){
+                    String element = objects.get(i).getString("itemName");
+                    dataList.add(element.toString());
                 }
-                myArray = dataList.toArray(new String[dataList.size()]);
+            } else {
+                Toast.makeText(
+                        getApplicationContext(),
+                        e.getMessage().toString(),
+                        Toast.LENGTH_LONG
+                ).show();
+            }
+            myArray = dataList.toArray(new String[dataList.size()]);
 
-                final ArrayList<String> list  = new ArrayList<String>(Arrays.asList(myArray));
+            final ArrayList<String> list  = new ArrayList<String>(Arrays.asList(myArray));
 
-                ArrayAdapter<String> adapterList
-                        = new ArrayAdapter<String>(ReadObjects.this, android.R.layout.simple_list_item_single_choice, myArray);
+            ArrayAdapter<String> adapterList
+                    = new ArrayAdapter<String>(ReadObjects.this, android.R.layout.simple_list_item_single_choice, myArray);
 
-                listView.setAdapter(adapterList);
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(final AdapterView<?> adapter, View v, final int position,
-                                            long id) {
+            listView.setAdapter(adapterList);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(final AdapterView<?> adapter, View v, final int position,
+                                        long id) {
 
-                        final String value = (String) adapter.getItemAtPosition(position);
+                    final String value = (String) adapter.getItemAtPosition(position);
 
-                        //Alert showing the options related with the object (Update or Delete)
-                        AlertDialog.Builder builder = new AlertDialog.Builder(ReadObjects.this)
-                                .setTitle(value + " movie" )
-                                .setMessage("What do you want to do?")
-                                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dataList.remove(position);
-                                        deleteObject(value);
-                                        myArray = dataList.toArray(new String[dataList.size()]);
+                    //Alert showing the options related with the object (Update or Delete)
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ReadObjects.this)
+                            .setTitle(value + " movie" )
+                            .setMessage("What do you want to do?")
+                            .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dataList.remove(position);
+                                    deleteObject(value);
+                                    myArray = dataList.toArray(new String[dataList.size()]);
 
-                                        ArrayAdapter<String> adapterList
-                                                = new ArrayAdapter<String>(ReadObjects.this, android.R.layout.simple_list_item_single_choice, myArray);
+                                    ArrayAdapter<String> adapterList
+                                            = new ArrayAdapter<String>(ReadObjects.this, android.R.layout.simple_list_item_single_choice, myArray);
 
-                                        listView.setAdapter(adapterList);
-                                    }
-                                })
-                                .setNeutralButton("Update",  new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        Intent intent = new Intent(ReadObjects.this, UpdateObject.class);
-                                        intent.putExtra("objectName", value.toString());
-                                        startActivity(intent);
-                                    }
-                                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.cancel();
-                                    }
-                                });
-                        AlertDialog ok = builder.create();
-                        ok.show();
-                    }
-                });
+                                    listView.setAdapter(adapterList);
+                                }
+                            })
+                            .setNeutralButton("Update",  new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent intent = new Intent(ReadObjects.this, UpdateObject.class);
+                                    intent.putExtra("objectName", value.toString());
+                                    startActivity(intent);
+                                }
+                            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            });
+                    AlertDialog ok = builder.create();
+                    ok.show();
+                }
+            });
             }
         });
     }
@@ -128,21 +133,25 @@ public class ReadObjects extends AppCompatActivity {
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(final List<ParseObject> object, ParseException e) {
-                if (e == null) {
-                    object.get(0).deleteInBackground(new DeleteCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            if (e == null) {
+            if (e == null) {
+                object.get(0).deleteInBackground(new DeleteCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e == null) {
 
-                            } else {
+                        } else {
 
-                            }
                         }
-                    });
-                } else {
-
-                }
-            };
-        });
+                    }
+                });
+            } else {
+                Toast.makeText(
+                        getApplicationContext(),
+                        e.getMessage().toString(),
+                        Toast.LENGTH_LONG
+                ).show();
+            }
+        };
+    });
     }
 }

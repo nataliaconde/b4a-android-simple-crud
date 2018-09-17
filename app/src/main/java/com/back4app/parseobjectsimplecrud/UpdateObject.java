@@ -40,6 +40,16 @@ public class UpdateObject extends AppCompatActivity {
         itemAvailable = (Switch) findViewById(R.id.swiAvailable);
         itemCalendary = (CalendarView) findViewById(R.id.calendarView);
 
+        itemCalendary.setOnDateChangeListener( new CalendarView.OnDateChangeListener() {
+            public void onSelectedDayChange(CalendarView calendarView, int year, int month, int dayOfMonth) {
+                String getDate = (dayOfMonth + "/" + (month+1) + "/" + year);
+                formatterDate = convertStringToData(getDate);
+            }
+        });
+
+        final Intent element = getIntent();
+        final String objectName = element.getStringExtra("objectName").toString();
+
         create_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -47,12 +57,11 @@ public class UpdateObject extends AppCompatActivity {
             }
         });
 
-        final Intent element = getIntent();
         String currentUser = ParseUser.getCurrentUser().getObjectId();
-        final String objectName = element.getStringExtra("objectName").toString();
+        final ParseObject obj = ParseObject.createWithoutData("_User", currentUser);
+
         ParseQuery<ParseObject> query = ParseQuery.getQuery("reminderList");
 
-        final ParseObject obj = ParseObject.createWithoutData("_User",currentUser);
         query.whereEqualTo("userId", obj);
         query.whereEqualTo("itemName", objectName);
 
@@ -70,7 +79,11 @@ public class UpdateObject extends AppCompatActivity {
                     itemAvailable.setChecked(object.getBoolean("isAvailable"));
                     getObjectId = object.getObjectId().toString();
                 } else {
-
+                    Toast.makeText(
+                            getApplicationContext(),
+                            e.getMessage().toString(),
+                            Toast.LENGTH_LONG
+                    ).show();
                 }
             }
         });
@@ -106,40 +119,39 @@ public class UpdateObject extends AppCompatActivity {
         final String itemAddUpdate = itemAdd.getText().toString();
         final Boolean isAvailableUpdate = itemAvailable.isChecked();
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        final String selectedDate = sdf.format(new Date(itemCalendary.getDate()));
-
-        final Date formatterDateHere = convertStringToData(selectedDate);
-
         ParseQuery<ParseObject> query = ParseQuery.getQuery("reminderList");
 
         // Retrieve the object by id
         query.getInBackground(getObjectId, new GetCallback<ParseObject>() {
             public void done(ParseObject reminderList, ParseException e) {
-                if (e == null) {
-                    reminderList.put("itemName", itemNameUpdate);
-                    reminderList.put("additionalInformation", itemAddUpdate);
-                    reminderList.put("dateCommitment", formatterDateHere);
-                    reminderList.put("isAvailable", isAvailableUpdate);
-                    reminderList.saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            if (e == null) {
-                                Intent intent = new Intent(UpdateObject.this, ReadObjects.class);
-                                startActivity(intent);
-                            } else {
-                                Toast.makeText(
-                                        getApplicationContext(),
-                                        e.getMessage().toString(),
-                                        Toast.LENGTH_LONG
-                                ).show();
-                            }
+            if (e == null) {
+                reminderList.put("itemName", itemNameUpdate);
+                reminderList.put("additionalInformation", itemAddUpdate);
+                reminderList.put("dateCommitment", formatterDate);
+                reminderList.put("isAvailable", isAvailableUpdate);
+                reminderList.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e == null) {
+                            Intent intent = new Intent(UpdateObject.this, ReadObjects.class);
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(
+                                    getApplicationContext(),
+                                    e.getMessage().toString(),
+                                    Toast.LENGTH_LONG
+                            ).show();
                         }
-                    });
+                    }
+                });
 
-                } else {
-
-                }
+            } else {
+                Toast.makeText(
+                        getApplicationContext(),
+                        e.getMessage().toString(),
+                        Toast.LENGTH_LONG
+                ).show();
+            }
             }
         });
     }

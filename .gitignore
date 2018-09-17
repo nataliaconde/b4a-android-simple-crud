@@ -8,3 +8,8 @@
 /build
 /captures
 .externalNativeBuild
+
+
+app/src/main/res/values/strings.xml
+app/src/main/java/com/back4app/parseobjectsimplecrud/App.java
+
