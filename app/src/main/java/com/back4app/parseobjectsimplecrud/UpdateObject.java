@@ -128,7 +128,9 @@ public class UpdateObject extends AppCompatActivity {
                 if (e == null) {
                     reminderList.put("itemName", itemNameUpdate.toString());
                     reminderList.put("additionalInformation", itemAddUpdate.toString());
-                    reminderList.put("dateCommitment", formatterDate);
+                    if (formatterDate != null) {
+                        reminderList.put("dateCommitment", formatterDate);
+                    }
                     reminderList.put("isAvailable", isAvailableUpdate);
 
                     reminderList.saveInBackground(new SaveCallback() {
