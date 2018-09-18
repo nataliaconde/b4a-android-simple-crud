@@ -140,7 +140,11 @@ public class ReadObjects extends AppCompatActivity {
                         if (e == null) {
 
                         } else {
-
+                            Toast.makeText(
+                                    getApplicationContext(),
+                                    e.getMessage().toString(),
+                                    Toast.LENGTH_LONG
+                            ).show();
                         }
                     }
                 });

@@ -3,6 +3,7 @@ package com.back4app.parseobjectsimplecrud;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -115,8 +116,8 @@ public class UpdateObject extends AppCompatActivity {
 
     }
     public void saveObject(){
-        final String itemNameUpdate = itemName.getText().toString();
-        final String itemAddUpdate = itemAdd.getText().toString();
+        final Editable itemNameUpdate = itemName.getText();
+        final Editable itemAddUpdate = itemAdd.getText();
         final Boolean isAvailableUpdate = itemAvailable.isChecked();
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("reminderList");
@@ -124,34 +125,34 @@ public class UpdateObject extends AppCompatActivity {
         // Retrieve the object by id
         query.getInBackground(getObjectId, new GetCallback<ParseObject>() {
             public void done(ParseObject reminderList, ParseException e) {
-            if (e == null) {
-                reminderList.put("itemName", itemNameUpdate);
-                reminderList.put("additionalInformation", itemAddUpdate);
-                reminderList.put("dateCommitment", formatterDate);
-                reminderList.put("isAvailable", isAvailableUpdate);
-                reminderList.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if (e == null) {
-                            Intent intent = new Intent(UpdateObject.this, ReadObjects.class);
-                            startActivity(intent);
-                        } else {
-                            Toast.makeText(
-                                    getApplicationContext(),
-                                    e.getMessage().toString(),
-                                    Toast.LENGTH_LONG
-                            ).show();
-                        }
-                    }
-                });
+                if (e == null) {
+                    reminderList.put("itemName", itemNameUpdate.toString());
+                    reminderList.put("additionalInformation", itemAddUpdate.toString());
+                    reminderList.put("dateCommitment", formatterDate);
+                    reminderList.put("isAvailable", isAvailableUpdate);
 
-            } else {
-                Toast.makeText(
-                        getApplicationContext(),
-                        e.getMessage().toString(),
-                        Toast.LENGTH_LONG
-                ).show();
-            }
+                    reminderList.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null) {
+                                Intent intent = new Intent(UpdateObject.this, ReadObjects.class);
+                                startActivity(intent);
+                            } else {
+                                Toast.makeText(
+                                        getApplicationContext(),
+                                        e.getMessage().toString(),
+                                        Toast.LENGTH_LONG
+                                ).show();
+                            }
+                        }
+                    });
+                } else {
+                    Toast.makeText(
+                            getApplicationContext(),
+                            e.getMessage().toString(),
+                            Toast.LENGTH_LONG
+                    ).show();
+                }
             }
         });
     }
