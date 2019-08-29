@@ -27,6 +27,12 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
     //Configure your Parse Android SDK
-    implementation 'com.parse:parse-android:1.17.3'
+    implementation "com.github.parse-community.Parse-SDK-Android:parse:1.18.5"
     implementation 'com.android.support:design:28.0.0-beta01'
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+    maven { url 'https://jitpack.io' }
 }
